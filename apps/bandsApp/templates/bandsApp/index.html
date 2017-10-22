@@ -11,12 +11,12 @@
     <link rel="stylesheet" type="text/css" href="{% static 'bandsApp/CSS/style.css' %}" />    
     <title>BANDIT</title>
 </head>
-<body>
+<body id="wrapper">
         <!--Header start-->
         <div  >
                         <div class="page-header">
                                 {% load static %}
-                                <img  src="{% static "bandsapp/img/logo.png" %}" alt="logo"/>    
+                                <img  src="{% static "bandsapp/img/logo-01.png" %}" alt="logo"/>    
                         </div>
                 <!--Header end-->
 
@@ -24,9 +24,10 @@
                 <nav class="navbar navbar-inverse" id="navbar">
                                 <div class="container-fluid">
                                   <ul class="nav navbar-nav">
-                                    <li class="active"><a href="#">Artists</a></li>
-                                    <li><a href="#">Charities</a></li>
-                                    <li><a href="#">Exclusives</a></li>
+                                    <li class="active"><a href="{% url 'bands:home' %}">Home</a></li>                                                
+                                    <li><a href="{% url 'bands:artists' %}">Artists</a></li>
+                                    <li><a href="{% url 'bands:cause' %}">Support a Cause</a></li>
+                                    <li><a href="{% url 'bands:exclusives' %}">Exclusives</a></li>
                                   </ul>
                                   <ul class="nav navbar-nav navbar-right">
                                     <li><a href="#"><span class="glyphicon glyphicon-user"></span> Login</a></li>
@@ -83,96 +84,41 @@
                                 
                               <div class="container-fluid bg-3 text-center">    
                                 <div class="row">
+                                {% for band in featuredArtist|slice:"8" %}
                                   <div class="col-sm-3">
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+                                    <p>{{band.vendor.name}}</p>   
+                                    <p>{{band.name}}</p>
+                                    <p>${{band.price}}</p>
+                                    <img src="{{band.imageUrl}}" class="img-responsive" style="width:100%" alt="Image" />
                                   </div>
-                                  <div class="col-sm-3"> 
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
-                                  <div class="col-sm-3"> 
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
-                                  <div class="col-sm-3">
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
+                                  {% comment %} 
+                                 {% endcomment %}
+                                  {% endfor %}
                                 </div>
                               </div><br>
-                              
-                              <div class="container-fluid bg-3 text-center">    
-                                <div class="row">
-                                  <div class="col-sm-3">
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
-                                  <div class="col-sm-3"> 
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
-                                  <div class="col-sm-3"> 
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
-                                  <div class="col-sm-3">
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
+
+                        <div class="jumbotron">
+                                        <div class="container text-center">
+                                        <h1>Band Together</h1>      
+                                        <p>Support a cause and be a hero!</p>
+                                        </div>
                                 </div>
-                              </div><br><br>
-                              <!--Arist Portfolio End-->
- <!--Charity Portfolio Begin-->
- <div class="jumbotron">
-                <div class="container text-center">
-                  <h1>Band Together</h1>      
-                  <p>Support a cause and be a hero!</p>
-                </div>
-              </div>
-                
-              <div class="container-fluid bg-3 text-center">    
-                <div class="row">
-                  <div class="col-sm-3">
-                    <p>Some text..</p>
-                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                  </div>
-                  <div class="col-sm-3"> 
-                    <p>Some text..</p>
-                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                  </div>
-                  <div class="col-sm-3"> 
-                    <p>Some text..</p>
-                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                  </div>
-                  <div class="col-sm-3">
-                    <p>Some text..</p>
-                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                  </div>
-                </div>
-              </div><br>
-              
-              <div class="container-fluid bg-3 text-center">    
-                <div class="row">
-                  <div class="col-sm-3">
-                    <p>Some text..</p>
-                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                  </div>
-                  <div class="col-sm-3"> 
-                    <p>Some text..</p>
-                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                  </div>
-                  <div class="col-sm-3"> 
-                    <p>Some text..</p>
-                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                  </div>
-                  <div class="col-sm-3">
-                    <p>Some text..</p>
-                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                  </div>
-                </div>
-              </div><br><br>
-              <!--Charity Portfolio End-->
+                                        
+                        <div class="container-fluid bg-3 text-center">    
+                                <div class="row">
+                                {% for band in featuredCharity|slice:"8" %}
+                                <div class="col-sm-3">
+                                <p>{{band.vendor.name}}</p>   
+                                <p>{{band.name}}</p>
+                                <p>${{band.price}}</p>
+                                <img src="{{band.imageUrl}}}E" class="img-responsive" style="width:100%" alt="Image" />
+                                </div>
+                                {% comment %} 
+                                {% endcomment %}
+                                {% endfor %}
+                                </div>
+                                </div><br>
+                                <!--Charity Portfolio End-->
 
               <!--Exclusives Begin-->
               <div class="jumbotron">
@@ -184,45 +130,19 @@
                         
                       <div class="container-fluid bg-3 text-center">    
                         <div class="row">
-                          <div class="col-sm-3">
-                            <p>Some text..</p>
-                            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                          </div>
-                          <div class="col-sm-3"> 
-                            <p>Some text..</p>
-                            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                          </div>
-                          <div class="col-sm-3"> 
-                            <p>Some text..</p>
-                            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                          </div>
-                          <div class="col-sm-3">
-                            <p>Some text..</p>
-                            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                          </div>
-                        </div>
-                      </div><br>
-                      
-                      <div class="container-fluid bg-3 text-center">    
-                        <div class="row">
-                          <div class="col-sm-3">
-                            <p>Some text..</p>
-                            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                          </div>
-                          <div class="col-sm-3"> 
-                            <p>Some text..</p>
-                            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                          </div>
-                          <div class="col-sm-3"> 
-                            <p>Some text..</p>
-                            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                          </div>
-                          <div class="col-sm-3">
-                            <p>Some text..</p>
-                            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                          </div>
-                        </div>
-                      </div><br><br>
+                                        {% for band in featuredArtist|slice:"8" %}
+                                        <div class="col-sm-3">
+                                          <p>{{band.vendor.name}}</p>   
+                                          <p>{{band.name}}</p>
+                                          <p>${{band.price}}</p>
+                                          <img src="{{band.imageUrl}}}E" class="img-responsive" style="width:100%" alt="Image" />
+                                        </div>
+                                        {% comment %} 
+                                       {% endcomment %}
+                                        {% endfor %}
+                                      </div>
+                                    </div><br>
+             
                       <!--Exclusives End-->
 </body>
 </html>
