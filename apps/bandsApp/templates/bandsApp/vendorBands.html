@@ -1,1 +1,10 @@
-<h1>This page will display all bands by local artists</h1>
+<h1>This page will display all bands by {{type}}s</h1>
+
+{% for band in bands%} 
+    <div>
+        <img src="{{band.imageUrl}}" alt="">
+        {{band.name}} {{band.price}}
+        {{band.vendor.name}}
+    </div>
+
+{% endfor %}    

@@ -13,7 +13,7 @@
 </head>
 <body>
         <!--Header start-->
-        <div  >
+        <div>
                         <div class="page-header">
                                 {% load static %}
                                 <img  src="{% static "bandsapp/img/logo.png" %}" alt="logo"/>    
@@ -24,13 +24,26 @@
                 <nav class="navbar navbar-inverse" id="navbar">
                                 <div class="container-fluid">
                                   <ul class="nav navbar-nav">
-                                    <li class="active"><a href="#">Artists</a></li>
+                                    <li class="active"><a href="{% url 'bands:home' %}">Home</a></li>
+                                    <li><a href="{% url 'bands:artists' %}">Artists</a></li>
                                     <li><a href="#">Charities</a></li>
                                     <li><a href="#">Exclusives</a></li>
                                   </ul>
                                   <ul class="nav navbar-nav navbar-right">
-                                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-                                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Cart</a></li>
+                                      {% if logged_in %}
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                {{logText}}
+                                            </a>
+                                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <a class="dropdown-item" href="#">View Profile</a>
+                                                <a class="dropdown-item" href="#">Logout</a>
+                                            </div>
+                                        </li>
+                                        {% else  %}
+                                        <li><a href="#"><span class="glyphicon glyphicon-user"></span>{{logText}}</a></li>
+                                        {% endif %}
+                                    <li><a href="{% url 'bands:showCart' %}"><span class="glyphicon glyphicon-log-in"></span> Cart</a></li>
                                   </ul>
                                 </div>
                               </nav>
@@ -83,28 +96,35 @@
                                 
                               <div class="container-fluid bg-3 text-center">    
                                 <div class="row">
-                                  <div class="col-sm-3">
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
-                                  <div class="col-sm-3"> 
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
-                                  <div class="col-sm-3"> 
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
-                                  <div class="col-sm-3">
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
+                                    {% for band in featuredArtist|slice:"4" %}       
+                                        <div class="col-sm-3">
+                                            <p>{{band.name}} {{band.price}}</p>
+                                            <img src="{{band.imageUrl}}}E" class="img-responsive" style="width:100%" alt="Image">
+                                        </div>
+                                        {% comment %} <div class="col-sm-3"> 
+                                            <p>Some text..</p>
+                                            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+                                        </div>
+                                        <div class="col-sm-3"> 
+                                            <p>Some text..</p>
+                                            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <p>Some text..</p>
+                                            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+                                        </div> {% endcomment %}
+                                    {% endfor %}
                                 </div>
                               </div><br>
                               
                               <div class="container-fluid bg-3 text-center">    
                                 <div class="row">
-                                  <div class="col-sm-3">
+                                    {% for band in featuredArtist|slice:"5:8" %}     
+                                    <div class="col-sm-3">
+                                        <p>{{band.name}}}</p>
+                                        <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+                                    </div>
+                                  {% comment %} <div class="col-sm-3"> 
                                     <p>Some text..</p>
                                     <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
                                   </div>
@@ -112,14 +132,11 @@
                                     <p>Some text..</p>
                                     <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
                                   </div>
-                                  <div class="col-sm-3"> 
-                                    <p>Some text..</p>
-                                    <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
                                   <div class="col-sm-3">
                                     <p>Some text..</p>
                                     <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-                                  </div>
+                                  </div> {% endcomment %}
+                                  {% endfor %}
                                 </div>
                               </div><br><br>
                               <!--Arist Portfolio End-->

@@ -15,6 +15,7 @@ from django.contrib import messages
 def index (request) :  
     
     numCartItems = 0
+    context = {}
 
     if not request.session.session_key:
         request.session.save()
@@ -25,14 +26,23 @@ def index (request) :
     try :
         order = Order.objects.get(session_id=session_key)
         request.session['order_id'] = order.id
-        bands = order.bands.all()
+        bands = OrderDetails.objects.filter(order=order)
         numCartItems = len(bands)
         print numCartItems
     except Order.DoesNotExist :
         numCartItems = 0
     
+    user = __isLoggedIn__(request)
+    if (user) :
+        context['logged_in'] = True
+        context['logText'] = user.name
+    else :
+        context['logged_in'] = False
+        context['logText'] = 'Login'
+    
     # Get artists featured items
     artistFeaturedBands = Band.objects.filter(vendor__vendorType='artist', isFeatured='True')
+    
     print artistFeaturedBands
 
     # Get exclusive featured items
@@ -43,7 +53,10 @@ def index (request) :
     charityFeaturedBands = Band.objects.filter(vendor__vendorType='charity', isFeatured='True')
     print charityFeaturedBands
 
-    context = {'numCartItems':numCartItems, 'featuredArtist':artistFeaturedBands, 'featuredExclusive':exclusiveFeaturedBands, 'featuredCharity':charityFeaturedBands}
+    context['numCartItems'] = numCartItems 
+    context['featuredArtist'] = artistFeaturedBands
+    context['featuredExclusive'] = exclusiveFeaturedBands
+    context['featuredCharity'] = charityFeaturedBands
     return render(request, 'bandsApp/index.html', context)
 
 # Display all the bands by local artists. 
@@ -73,14 +86,24 @@ def search (request) :
     return render(request, 'bandsApp/searchResults.html', context)
 
 # Display shopping cart 
-def showCart (request, orderId) :  
-    context = {'orderId':orderId}
-    order = Order.objects.get(pk=orderId)
-    bands = order.bands.all()
+def showCart (request) :  
+    
+    order = Order.objects.get(pk=int(request.session['order_id']))
+    bands = OrderDetails.objects.filter(order=order)
     totalPrice = 0
     for band in bands :
-        totalPrice += band.price
-    context = {'bands':bands, 'totalPrice':totalPrice}
+        totalPrice += (band.band.price * band.qty)
+    request.session['totalPrice'] = totalPrice
+    user = __isLoggedIn__(request)
+    
+    context = {'bands':bands, 'totalPrice':totalPrice, 'totalItems':len(bands), 'orderId': request.session['order_id']}
+    if (user) :
+        context['logged_in'] = True
+        context['logText'] = user.name
+    else :
+        context['logged_in'] = False
+        context['logText'] = 'Login'
+    
     return render(request, 'bandsApp/shoppingCart.html', context)
 
 # Edit shopping cart. some problem here. i need to fix it 
@@ -98,4 +121,78 @@ def vendorDetails(request, vendorId) :
 
     context = {'vendor':vendor, 'bands':bands} 
     return render(request, 'bandsApp/vendorDetails.html', context)
+
+def checkout(request):
+    if request.method == "POST":
+        if not 'logged_in_user' in request.session :
+            return redirect(reverse('bands:register_login'))
+        else :
+            return redirect(reverse('bands:checkoutDetails'))
+
+def register_login(request) :
+    return render(request, 'bandsApp/register_login.html', {})
+
+def checkoutDetails(request) :
+    user = __isLoggedIn__(request)
+    credit_card = user.creditCard
+    print credit_card
+    shipping_address = user.shippingAddress()
+    print shipping_address
+    print request.session['totalPrice']
+    context = {'shipping_address':shipping_address, 'credit_card':credit_card}
+    return render(request, 'bandsApp/checkoutDetails.html', context)
+
+def register(request) :
+    error = False
+    context = {}
+    print "in register"
+
+    if request.method == "POST":
+        print request.POST
+
+        returnVal = User.objects.register(request.POST)
+        if returnVal['user'] :
+            request.session['logged_in_user'] = returnVal['user'].id
+            print "logged in user: ",request.session['logged_in_user']
+            return redirect(reverse('bands:home'))
+        else :
+            for error in returnVal['errors'] :
+                print error
+                messages.error(request,error['message'],extra_tags=error['extra_tags'])
+            return redirect(reverse("bands:register_login"))
+
+def login (request):
+    if request.method == "POST":
+        returnVal = User.objects.login(request.POST)
+        if returnVal['user']:
+            request.session['logged_in_user'] = returnVal['user'].id
+            if 'order_id' in request.session :
+                order = Order.objects.get(pk=request.session['order_id'])
+                order.user = returnVal['user']
+            print "logged in user: ",request.session['logged_in_user']
+            return redirect(reverse('bands:home'))
+        else:
+            for error in returnVal['errors'] :
+                print error
+                messages.error(request,error['message'],extra_tags=error['extra_tags'])
+            return redirect(reverse('bands:login_register'))
+
+def logout (request) :
+    request.session.flush()
+    return redirect(reverse('poke:home'))
+
+def __isLoggedIn__(request):
+    if 'logged_in_user' in request.session:
+        user = User.objects.get(pk=int(request.session['logged_in_user']))
+        return user
+    else :
+        return None
+
+
+
+
+   
+
+
+
 
