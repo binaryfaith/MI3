@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.contrib import messages
 
 # Display home page
+
 def index (request) :  
     context = {}
 

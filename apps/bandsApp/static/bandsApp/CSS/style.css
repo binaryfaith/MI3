@@ -1,3 +1,8 @@
+#wrapper{
+    height: 100%;
+background-color: white;
+}
+
 .page-header{
     width:100%;
     text-align:center;
@@ -16,13 +21,13 @@
     margin-top: -20px;
 }
 #navbar{
-
     background-color: #233237;
 }
 .jumbotron{
     background-color: #233237;
     color: #EAC67A;
 }
+<<<<<<< HEAD
 
 .cartWrapper {
     padding: 15px;
@@ -83,3 +88,12 @@ fieldset.scheduler-border {
 .addMargin {
     margin-top: 60px;
 }
+
+.carousel-inner > .item > img {
+    margin: 0 auto;
+}
+.nav {
+    color: #EAC67A;
+
+}
+
