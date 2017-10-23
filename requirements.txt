@@ -1,8 +1,10 @@
 bcrypt==3.1.4
 cffi==1.11.2
 Django==1.11.6
+django-background-tasks==1.1.11
 django-bootstrap-forms==0.1
 django-bootstrap3==9.0.0
+django-compat==1.0.14
 django-debug-toolbar==1.8
 djangorestframework==3.7.1
 pycparser==2.18
