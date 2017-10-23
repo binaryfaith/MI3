@@ -13,33 +13,12 @@ from django.contrib import messages
 
 # Display home page
 def index (request) :  
-    
-    numCartItems = 0
     context = {}
 
-    if not request.session.session_key:
-        request.session.save()
-    session_key = request.session.session_key   
-    print session_key
+    __setActiveOrder__(request)
+    
+    context = __addNavBarDetailsToContext__(request)
 
-    # Find if the session key exists in orders db 
-    try :
-        order = Order.objects.get(session_id=session_key)
-        request.session['order_id'] = order.id
-        bands = OrderDetails.objects.filter(order=order)
-        numCartItems = len(bands)
-        print numCartItems
-    except Order.DoesNotExist :
-        numCartItems = 0
-    
-    user = __isLoggedIn__(request)
-    if (user) :
-        context['logged_in'] = True
-        context['logText'] = user.name
-    else :
-        context['logged_in'] = False
-        context['logText'] = 'Login'
-    
     # Get artists featured items
     artistFeaturedBands = Band.objects.filter(vendor__vendorType='artist', isFeatured='True')
     
@@ -53,10 +32,11 @@ def index (request) :
     charityFeaturedBands = Band.objects.filter(vendor__vendorType='charity', isFeatured='True')
     print charityFeaturedBands
 
-    context['numCartItems'] = numCartItems 
     context['featuredArtist'] = artistFeaturedBands
     context['featuredExclusive'] = exclusiveFeaturedBands
     context['featuredCharity'] = charityFeaturedBands
+
+    print "context: ", context
     return render(request, 'bandsApp/index.html', context)
 
 # Display all the bands by local artists. 
@@ -87,24 +67,26 @@ def search (request) :
 
 # Display shopping cart 
 def showCart (request) :  
-    
-    order = Order.objects.get(pk=int(request.session['order_id']))
-    bands = OrderDetails.objects.filter(order=order)
-    totalPrice = 0
-    for band in bands :
-        totalPrice += (band.band.price * band.qty)
-    request.session['totalPrice'] = totalPrice
-    user = __isLoggedIn__(request)
-    
-    context = {'bands':bands, 'totalPrice':totalPrice, 'totalItems':len(bands), 'orderId': request.session['order_id']}
-    if (user) :
-        context['logged_in'] = True
-        context['logText'] = user.name
+    context = {}
+    order = __isActiveOrder__(request)
+    if (order) :
+        context = __addNavBarDetailsToContext__(request)
+
+        bands = OrderDetails.objects.filter(order=order)
+        totalPrice = 0
+        for band in bands :
+            totalPrice += (band.band.price * band.qty)
+        request.session['totalPrice'] = totalPrice
+        user = __isLoggedIn__(request)
+        
+        context['bands'] = bands
+        context['totalPrice']= totalPrice
+        context['totalItems'] = len(bands)
+        context['orderId'] = request.session['order_id']
+        
+        return render(request, 'bandsApp/shoppingCart.html', context)
     else :
-        context['logged_in'] = False
-        context['logText'] = 'Login'
-    
-    return render(request, 'bandsApp/shoppingCart.html', context)
+        return redirect(reverse('bands:home'))
 
 # Edit shopping cart. some problem here. i need to fix it 
 def editCart (request, orderId) :  
@@ -113,7 +95,7 @@ def editCart (request, orderId) :
     return redirect(reverse('bands:cart'))
 
 def vendorDetails(request, vendorId) :
-    print "in vendor detials"
+    
     # Get the vendor 
     vendor = Vendor.objects.get(pk=vendorId) # pk = primary key. You can put id instead of pk
     # Get all bands by this vendor
@@ -130,17 +112,47 @@ def checkout(request):
             return redirect(reverse('bands:checkoutDetails'))
 
 def register_login(request) :
-    return render(request, 'bandsApp/register_login.html', {})
+    context = __addNavBarDetailsToContext__(request)
+    return render(request, 'bandsApp/register_login.html', context)
 
 def checkoutDetails(request) :
+
+    conext = {}
+    context = __addNavBarDetailsToContext__(request)
+
     user = __isLoggedIn__(request)
     credit_card = user.creditCard
     print credit_card
     shipping_address = user.shippingAddress()
+    billing_address = user.billingAddress()
     print shipping_address
-    print request.session['totalPrice']
-    context = {'shipping_address':shipping_address, 'credit_card':credit_card}
+    print billing_address
+    # print request.session['totalPrice']
+
+    # If order is placed then show thank you message
+    order  = __isActiveOrder__(request)
+
+    context['shipping_address'] = shipping_address
+    context['credit_card'] = credit_card
+    context['billing_address'] = billing_address
+
+    if not order:
+        context['orderStatus'] = 'received'
+        
+
+    print context
     return render(request, 'bandsApp/checkoutDetails.html', context)
+
+def confirmCheckout(request):
+    # Update order status
+    order = Order.objects.get(pk=int(request.session['order_id'])) 
+    order.status = 'received'
+    order.save()
+    del request.session['order_id']
+    del equest.session['totalPrice']
+    print "chnaged order status"
+    
+    return redirect(reverse('bands:checkoutDetails'))
 
 def register(request) :
     error = False
@@ -178,8 +190,8 @@ def login (request):
             return redirect(reverse('bands:login_register'))
 
 def logout (request) :
-    request.session.flush()
-    return redirect(reverse('poke:home'))
+    del request.session['logged_in_user']
+    return redirect(reverse('bands:home'))
 
 def __isLoggedIn__(request):
     if 'logged_in_user' in request.session:
@@ -187,6 +199,64 @@ def __isLoggedIn__(request):
         return user
     else :
         return None
+
+def __isActiveOrder__(request) :
+    if 'order_id' in request.session :
+         order  = Order.objects.get(pk=int(request.session['order_id'])) 
+         return order 
+    else :
+        return None
+
+def __setActiveOrder__(request) :
+
+    user = __isLoggedIn__(request)
+    if (user):
+        order = Order.objects.filter(user=user, status="active")
+    else :
+        if not request.session.session_key:
+            request.session.save()
+        session_key = request.session.session_key   
+        print session_key
+        # Find if the session key exists in orders db 
+        order = Order.objects.filter(session_id=session_key, status='active')
+    
+    if (len(order) > 0) :
+        print "__setActiveOrder__ ", order
+        request.session['order_id'] = order[0].id
+
+def __getNumCartItems__(request) :
+    numCartItems = 0
+    order = __isActiveOrder__(request)
+    
+    if (order) :
+        bands = OrderDetails.objects.filter(order=order)
+        numCartItems = len(bands)
+
+    print "__getNumCartItems__ ",numCartItems
+    return numCartItems
+
+def __addNavBarDetailsToContext__(request) :
+
+    context = {}
+    numCartItems = __getNumCartItems__(request)
+    print "__addNavBarDetailsToContext__ numCartItems: ", numCartItems
+    context['numCartItems'] = numCartItems
+
+    user = __isLoggedIn__(request)
+    if (user) :
+        context['logged_in'] = True
+        context['logText'] = user.name
+    else :
+        context['logged_in'] = False
+        context['logText'] = 'Login'
+
+    print "__addNavBarDetailsToContext__ context: ", context
+    return context
+    
+
+       
+        
+
 
 
 

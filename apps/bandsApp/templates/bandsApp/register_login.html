@@ -12,33 +12,11 @@
     <title>BANDIT</title>
 </head>
 <body>
-    <!--Header start-->
-    <div class="page-header">
-        {% load static %}
-        <img  src="{% static "bandsapp/img/logo.png" %}" alt="logo"/>    
-    </div>
-    <!--Header end-->
+    {% include "./navbar.html" %}
 
-    <!--navbar start-->
-    <nav class="navbar navbar-inverse" id="navbar">
-        <div class="container-fluid">
-            <ul class="nav navbar-nav">
-            <li class="active"><a href="{% url 'bands:artists' %}">Artists</a></li>
-            <li><a href="#">Charities</a></li>
-            <li><a href="#">Exclusives</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-            <li><a href="{% url 'bands:showCart' %}"><span class="glyphicon glyphicon-log-in"></span> Cart</a></li>
-            </ul>
-        </div>
-    </nav>
-    <!--navbar end-->
-
-    <div id="container">
-        <h2>Welcome!</h2>
+    <div class="container">
         <div class="row">
-            <div class="col-md-6 indexLegend">
+            <div class="col-md-6 addMargin">
                
                 <form action="{% url 'bands:register' %}" method="post" class="form-horizontal">
                     {% csrf_token %}
@@ -85,7 +63,7 @@
                     </fieldset>
                 </form>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 addMargin">
                 <form action="{% url 'bands:login' %}" method="POST" class="form-horizontal">
                     {% csrf_token %}
                     <fieldset class="scheduler-border">

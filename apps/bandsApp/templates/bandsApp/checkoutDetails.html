@@ -12,58 +12,59 @@
     <title>BANDIT</title>
 </head>
 <body>
-        <!--Header start-->
-        <div>
-            <div class="page-header">
-                    {% load static %}
-                    <img  src="{% static "bandsapp/img/logo.png" %}" alt="logo"/>    
-            </div>
-            <!--Header end-->
-
-            <!--navbar start-->
-            <nav class="navbar navbar-inverse" id="navbar">
-                <div class="container-fluid">
-                    <ul class="nav navbar-nav">
-                    <li class="active"><a href="{% url 'bands:artists' %}">Artists</a></li>
-                    <li><a href="#">Charities</a></li>
-                    <li><a href="#">Exclusives</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        {% if logged_in %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{logText}}
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">View Profile</a>
-                                <a class="dropdown-item" href="#">Logout</a>
-                            </div>
-                        </li>
-                        {% else  %}
-                        <li><a href="#"><span class="glyphicon glyphicon-user"></span>{{logText}}</a></li>
-                        {% endif %}
-                        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Cart</a></li>
-                    </ul>
-                </div>
-             </nav>
-            <!--navbar end-->
-            
-            <div class="cartWrapper">
-                <div class="row">
+        {% include "./navbar.html" %}
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
                     <label for="amount">Total Amount:</label>
-                    <label for="amount">{{request.session.totalPrice}}</label>
                 </div>
-                <div class="row">
+                <div class="col-sm-6">
+                    {{request.session.totalPrice}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
                     <label for="creditCard">Credit Card Number</label>
-                    <label for="creditCard">{{credit_card}}</label>
                 </div>
-                <div class="row">
-                    <div class="col-sm-6">
+                <div class="col-sm-6">
+                    {{credit_card}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="address">
                         <h4>Shipping Address:</h4>
                         <p>{{shipping_address|linebreaks}}</p>
                     </div>
-                    <div class="col-sm-6">
+                </div>
+                <div class="col-sm-6">
+                    <div class="address">
                         <h4>Billing Address:</h4>
                         <p>{{billing_address|linebreaks}}</p>
                     </div>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <input type="submit" name="change" id="" value="Change">
+                    </form>
+                </div>
+                <div class="col-sm-6">
+                    <form action="{% url 'bands:confirmCheckout' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="submit" name="confirm" id="" value="Confirm Checkout">
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                {% if orderStatus %}
+                    <h2>Thank you for your business!</h2>
+                    <p>Your order has been received. Please click <a href="">here</a> to check your order history</p>
+                {% endif %}
+            </div>
+        </div>
+    </body>
+</html>

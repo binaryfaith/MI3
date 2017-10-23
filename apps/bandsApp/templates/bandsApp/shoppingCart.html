@@ -12,103 +12,69 @@
     <title>BANDIT</title>
 </head>
 <body>
-        <!--Header start-->
-        <div>
-            <div class="page-header">
-                    {% load static %}
-                    <img  src="{% static "bandsapp/img/logo.png" %}" alt="logo"/>    
-            </div>
-            <!--Header end-->
-
-            <!--navbar start-->
-            <nav class="navbar navbar-inverse" id="navbar">
-                <div class="container-fluid">
-                    <ul class="nav navbar-nav">
-                    <li class="active"><a href="{% url 'bands:artists' %}">Artists</a></li>
-                    <li><a href="#">Charities</a></li>
-                    <li><a href="#">Exclusives</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        {% if logged_in %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{logText}}
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">View Profile</a>
-                                <a class="dropdown-item" href="#">Logout</a>
-                            </div>
-                        </li>
-                        {% else  %}
-                        <li><a href="#"><span class="glyphicon glyphicon-user"></span>{{logText}}</a></li>
-                        {% endif %}
-                        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Cart</a></li>
-                    </ul>
-                </div>
-             </nav>
-            <!--navbar end-->
+        {% include "./navbar.html" %}
             
-                <div class="cartWrapper">
-                    <h4 id="shoppingBagHeader">SHOPPING BAG</h4>
+        <div class="cartWrapper">
+            <h4 id="shoppingBagHeader">SHOPPING BAG</h4>
+            <div class="row">
+                <div class="col-sm-8">
+                    <h4>Total Items ({{totalItems}})</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Item</th>
+                            <th></th>
+                            <th>Size</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </tr>
+                        {% for band in bands %}
+                        <tr>
+                            <td><img src="{{band.band.imageUrl}}" alt="" class="bandImg"></td>
+                            <td>{{band.band.name}}</td>
+                            <td>{{band.band.size}}</td>
+                            <td>
+                                <select class="form-control" id="sel1">
+                                    <option {% if band.qty == 1%} selected {% endif %}>1</option>
+                                    <option {% if band.qty == 2%} selected {% endif %}>2</option>
+                                    <option {% if band.qty == 3%} selected {% endif %}>3</option>
+                                    <option {% if band.qty == 4%} selected {% endif %}>4</option>
+                                    <option {% if band.qty == 5%} selected {% endif %}>5</option>
+                                </select>
+                            </td>
+                            <td>{{band.totalPrice}}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="col-sm-4">
                     <div class="row">
-                        <div class="col-sm-8">
-                            <h4>Total Items ({{totalItems}})</h4>
-                            <table class="table">
-                                <tr>
-                                    <th>Item</th>
-                                    <th></th>
-                                    <th>Size</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                </tr>
-                                {% for band in bands %}
-                                <tr>
-                                    <td><img src="{{band.band.imageUrl}}" alt="" class="bandImg"></td>
-                                    <td>{{band.band.name}}</td>
-                                    <td>{{band.band.size}}</td>
-                                    <td>
-                                        <select class="form-control" id="sel1">
-                                            <option {% if band.qty == 1%} selected {% endif %}>1</option>
-                                            <option {% if band.qty == 2%} selected {% endif %}>2</option>
-                                            <option {% if band.qty == 3%} selected {% endif %}>3</option>
-                                            <option {% if band.qty == 4%} selected {% endif %}>4</option>
-                                            <option {% if band.qty == 5%} selected {% endif %}>5</option>
-                                        </select>
-                                    </td>
-                                    <td>{{band.totalPrice}}</td>
-                                </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="row">
-                                <h4>Order Summary</h4>
-                            </div>
-                            <div class="row">
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <td>Merchandise:</td>
-                                        <td>{{totalPrice}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Shipping:</td>
-                                        <td>FREE</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Total:</td>
-                                        <td>{{totalPrice}}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="row">
-                                <form action="{% url 'bands:checkout' %}" method="POST">
-                                    {% csrf_token %}
-                                    <input type="submit" value="Checkout" id="checkout">
-                                </form>
-                            </div>
-                        </div>
+                        <h4>Order Summary</h4>
+                    </div>
+                    <div class="row">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>Merchandise:</td>
+                                <td>{{totalPrice}}</td>
+                            </tr>
+                            <tr>
+                                <td>Shipping:</td>
+                                <td>FREE</td>
+                            </tr>
+                            <tr>
+                                <td>Total:</td>
+                                <td>{{totalPrice}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <form action="{% url 'bands:checkout' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="submit" value="Checkout" id="checkout">
+                        </form>
                     </div>
                 </div>
+            </div>
         </div>
+        
     </body>
 </html>

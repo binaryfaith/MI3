@@ -12,43 +12,7 @@
     <title>BANDIT</title>
 </head>
 <body>
-        <!--Header start-->
-        <div>
-                        <div class="page-header">
-                                {% load static %}
-                                <img  src="{% static "bandsapp/img/logo.png" %}" alt="logo"/>    
-                        </div>
-                <!--Header end-->
-
-                <!--navbar start-->
-                <nav class="navbar navbar-inverse" id="navbar">
-                                <div class="container-fluid">
-                                  <ul class="nav navbar-nav">
-                                    <li class="active"><a href="{% url 'bands:home' %}">Home</a></li>
-                                    <li><a href="{% url 'bands:artists' %}">Artists</a></li>
-                                    <li><a href="#">Charities</a></li>
-                                    <li><a href="#">Exclusives</a></li>
-                                  </ul>
-                                  <ul class="nav navbar-nav navbar-right">
-                                      {% if logged_in %}
-                                        <li class="nav-item dropdown">
-                                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                {{logText}}
-                                            </a>
-                                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <a class="dropdown-item" href="#">View Profile</a>
-                                                <a class="dropdown-item" href="#">Logout</a>
-                                            </div>
-                                        </li>
-                                        {% else  %}
-                                        <li><a href="#"><span class="glyphicon glyphicon-user"></span>{{logText}}</a></li>
-                                        {% endif %}
-                                    <li><a href="{% url 'bands:showCart' %}"><span class="glyphicon glyphicon-log-in"></span> Cart</a></li>
-                                  </ul>
-                                </div>
-                              </nav>
-                 <!--navbar end-->
-
+        {% include "./navbar.html" %}
                 <!--Carousel start-->
                 <div id="myCarousel" class="carousel slide" data-ride="carousel">
                         <!-- Indicators -->
