@@ -276,6 +276,11 @@ def deleteBand(request, bandId) :
     else:
         return redirect(reverse('bands:showCart'))
 
+# @background(schedule=60)
+# def deleteGhostOrders():
+#     # lookup user by id and send them a message
+  
+
 def __isLoggedIn__(request):
     if 'logged_in_user' in request.session:
         user = User.objects.get(pk=int(request.session['logged_in_user']))
