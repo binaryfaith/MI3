@@ -11,32 +11,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'bandsApp/CSS/style.css' %}" />    
     <title>BANDIT</title>
 </head>
-<body id="wrapper">
-        <!--Header start-->
-        <div  >
-                        <div class="page-header">
-                                {% load static %}
-                                <img  src="{% static "bandsapp/img/logo-01.png" %}" alt="logo"/>    
-                        </div>
-                <!--Header end-->
 
-                <!--navbar start-->
-                <nav class="navbar navbar-inverse" id="navbar">
-                                <div class="container-fluid">
-                                  <ul class="nav navbar-nav">
-                                    <li class="active"><a href="{% url 'bands:home' %}">Home</a></li>                                                
-                                    <li><a href="{% url 'bands:artists' %}">Artists</a></li>
-                                    <li><a href="{% url 'bands:cause' %}">Support a Cause</a></li>
-                                    <li><a href="{% url 'bands:exclusives' %}">Exclusives</a></li>
-                                  </ul>
-                                  <ul class="nav navbar-nav navbar-right">
-                                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-                                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Cart</a></li>
-                                  </ul>
-                                </div>
-                              </nav>
-                 <!--navbar end-->
-
+<body id="wrapper"> 
+        {% include "./navbar.html" %}
                 <!--Carousel start-->
                 <div id="myCarousel" class="carousel slide" data-ride="carousel">
                         <!-- Indicators -->
@@ -86,10 +63,10 @@
                                 <div class="row">
                                 {% for band in featuredArtist|slice:"8" %}
                                   <div class="col-sm-3">
-                                    <p>{{band.vendor.name}}</p>   
+                                    <a href="{% url 'bands:vendorDetails' band.vendor.id %}"><p>{{band.vendor.name}}</p></a>   
                                     <p>{{band.name}}</p>
                                     <p>${{band.price}}</p>
-                                    <img src="{{band.imageUrl}}" class="img-responsive" style="width:100%" alt="Image" />
+                                    <a href="{% url 'bands:bandDetails' band.id %}"><img src="{{band.imageUrl}}" class="img-responsive" style="width:100%" alt="Image" /></a>
                                   </div>
                                   {% comment %} 
                                  {% endcomment %}
@@ -108,10 +85,10 @@
                                 <div class="row">
                                 {% for band in featuredCharity|slice:"8" %}
                                 <div class="col-sm-3">
-                                <p>{{band.vendor.name}}</p>   
+                                <a href="{% url 'bands:vendorDetails' band.vendor.id %}"><p>{{band.vendor.name}}</p> </a>  
                                 <p>{{band.name}}</p>
                                 <p>${{band.price}}</p>
-                                <img src="{{band.imageUrl}}}E" class="img-responsive" style="width:100%" alt="Image" />
+                                <a href="{% url 'bands:bandDetails' band.id %}"><img src="{{band.imageUrl}}}E" class="img-responsive" style="width:100%" alt="Image" /></a>
                                 </div>
                                 {% comment %} 
                                 {% endcomment %}
@@ -130,12 +107,12 @@
                         
                       <div class="container-fluid bg-3 text-center">    
                         <div class="row">
-                                        {% for band in featuredArtist|slice:"8" %}
+                                        {% for band in featuredExclusive|slice:"8" %}
                                         <div class="col-sm-3">
-                                          <p>{{band.vendor.name}}</p>   
+                                            <a href="{% url 'bands:vendorDetails' band.vendor.id %}"><p>{{band.vendor.name}}</p></a>   
                                           <p>{{band.name}}</p>
                                           <p>${{band.price}}</p>
-                                          <img src="{{band.imageUrl}}}E" class="img-responsive" style="width:100%" alt="Image" />
+                                          <a href="{% url 'bands:bandDetails' band.id %}"><img src="{{band.imageUrl}}}E" class="img-responsive" style="width:100%" alt="Image" /></a>
                                         </div>
                                         {% comment %} 
                                        {% endcomment %}

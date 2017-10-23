@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bandsApp/CSS/style.css' %}" />    
+    <title>BANDIT</title>
+</head>
+<body>
+        {% include "./navbar.html" %}
+
+        <div class="row">
+            <div class="col-sm-4">
+                <img src="{{band.imageUrl}}" class="img-responsive" style="width:100%" alt="Image" />
+            </div>
+            <div class="col-sm-4">
+                <h4>{{band.name}}</h4>
+                <p>{{band.description}}</p>
+                <h4>{{band.price}}</h4>
+            </div>
+            <div class="col-sm-4">
+                <form action="{% url 'bands:addToCart' band.id %}" method="POST">
+                    {% csrf_token %}
+                    <label for="qty">Select Quantity</label>
+                    <select class="form-control" id="sel1" name="qty">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                    <input type="submit" name="addToCart" id="" value="Add To Cart">
+                </form>
+            </div>
+        </div>
+</body>
+</html>

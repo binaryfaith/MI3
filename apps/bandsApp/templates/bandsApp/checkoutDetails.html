@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bandsApp/CSS/style.css' %}" />    
+    <title>BANDIT</title>
+</head>
+<body>
+        {% include "./navbar.html" %}
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="amount">Total Amount:</label>
+                </div>
+                <div class="col-sm-6">
+                    {{request.session.totalPrice}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="creditCard">Credit Card Number</label>
+                </div>
+                <div class="col-sm-6">
+                    {{credit_card}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="address">
+                        <h4>Shipping Address:</h4>
+                        <p>{{shipping_address|linebreaks}}</p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="address">
+                        <h4>Billing Address:</h4>
+                        <p>{{billing_address|linebreaks}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <input type="submit" name="change" id="" value="Change">
+                    </form>
+                </div>
+                <div class="col-sm-6">
+                    <form action="{% url 'bands:confirmCheckout' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="submit" name="confirm" id="" value="Confirm Checkout">
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                {% if orderStatus %}
+                    <h2>Thank you for your business!</h2>
+                    <p>Your order has been received. Please click <a href="">here</a> to check your order history</p>
+                {% endif %}
+            </div>
+        </div>
+    </body>
+</html>

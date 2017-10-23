@@ -27,6 +27,69 @@ background-color: white;
     background-color: #233237;
     color: #EAC67A;
 }
+<<<<<<< HEAD
+
+.cartWrapper {
+    padding: 15px;
+}
+
+#shoppingBagHeader{
+    padding-bottom: 40px;
+    /* border-bottom: 1px solid #7B7B7B */
+}
+
+hr.style1{
+	border-top: 1px solid #8c8b8b;
+}
+
+.bandImg {
+    height: 200px;
+}
+
+.address {
+    margin-top: 50px;
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #9d9d9d;
+}
+
+.cardDetails label {
+    width: 300px;
+    padding: 10px;
+    background-color: #EAC67A;
+    color: #233237;
+}
+
+form input[type="submit"] {
+    background-color: #233237;
+    color: #EAC67A;
+    width: 200px;
+    margin-top: 30px;
+}
+
+form label {
+    width: 200px;
+}
+
+legend.scheduler-border {
+    width:inherit; /* Or auto */
+    padding:0 10px; /* To give a bit of padding on the left and right */
+    border-bottom:none;
+}
+
+fieldset.scheduler-border {
+    border: 1px groove #ddd !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}
+
+.addMargin {
+    margin-top: 70px;
+    margin-bottom: 30px;
+}
+
 .carousel-inner > .item > img {
     margin: 0 auto;
 }
@@ -34,3 +97,4 @@ background-color: white;
     color: #EAC67A;
 
 }
+
