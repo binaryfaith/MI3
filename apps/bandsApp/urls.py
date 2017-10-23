@@ -21,6 +21,9 @@ urlpatterns = [
     url(r'^cart/confirmCheckout/$', views.confirmCheckout, name="confirmCheckout"),
     url(r'^vendor/(?P<vendorId>[0-9]+)/$', views.vendorDetails, name="vendorDetails"),
     # url(r'^vendor/(?P<vendorId>[0-9]+)/contact/$', views.contactVendor, name="contactVendor"),
-    # url(r'^band/(?P<bandId>[0-9]+)/$', views.bandDetails, name="vendorDetails"),
-    # url(r'^band/(?P<bandId>[0-9]+)/addToCart$', views.addToCart, name="addToCart"),
+    url(r'^band/(?P<bandId>[0-9]+)/$', views.bandDetails, name="bandDetails"),
+    url(r'^band/(?P<bandId>[0-9]+)/addToCart/$', views.addToCart, name="addToCart"),
+    url(r'^band/(?P<bandId>[0-9]+)/updateQty/$', views.updateQty, name="updateQty"),
+    url(r'^band/(?P<bandId>[0-9]+)/deleteBand/$', views.deleteBand, name="deleteBand"),
+
 ]

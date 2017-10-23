@@ -12,64 +12,29 @@
         <title>Artist's Profile</title>
     </head>
     <body>
-<!--Header start-->
-        <div>
-            <div class="page-header">
-                    {% load static %}
-                    <img  src="{% static "bandsapp/img/logo.png" %}" alt="logo"/>
-            </div>    
-    <!--Header end-->
-    <!--Arist Portfolio Begin-->
-                <div class="jumbotron">
-                    <div class="container text-center">
-                        <h1>Artist's Profile</h1>                      
-<!--navbar start-->
-                        
-<!--navbar end-->
+            {% include "./navbar.html" %}
+                <div class="container">
+                    <div class="row addMargin">
+                            <div class="col-sm-4">
+                               <img src="{{vendor.imageUrl}}" alt="Image" class="img-responsive"  />
+                            </div>
+                            <div class="col-sm-6 col-sm-offset-2">
+                                <h3>{{vendor.name}}</h3>   
+                                <p>{{vendor.email}}</p>
+                                <p>{{vendor.bio}}</p>
+                            </div>
                     </div>
                 </div>
-               
-                <nav class="navbar navbar-inverse" id="navbar">
-                        <div class="container-fluid">
-                            <ul class="nav navbar-nav">
-                                <li><a href="#">Artists</a></li>
-                                <li><a href="#">Charities</a></li>
-                                <li><a href="#">Exclusives</a></li>
-                            </ul>
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a href="#"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-                                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Cart</a></li>
-                            </ul>
-                        </div>
-                    </nav>
-            
-                    <div class="row">
-                            <div class="col-sm-6" style="background-color:pink;">
-                                <h3>This band had been selected by you.</h3>
-                                ----image here----
-                                <p></p>
-                                <p></p>
-                                <p></p>
-                                <p></p>
-                            </div>
-                            <div class="col-sm-4" style="background-color:lightblue;">
-                            {% for band in bands %}
-                                    <h3>Our Artist's Info</h3>
-                                    <p>{{band.vendor.name}}</p>   
-                                    <p>{{band.vendor.email}}</p>
-                                    <p>{{band.vendor.vendorType}}</p>
-                                    <p>{{band.vendor.bio}}</p>
-                                    <p>{{band.vendor.imageURL}}</p>
-                                    <p>${{band.price}}</p>
-                                    {% comment %} 
-                                    {% endcomment %}
-                                    {% endfor %}
-                            </div>
-                        </div>
+                <div class="jumbotron">
+                    <div class="container text-center">
+                        <h1>Designes by {{vendor.name}}</h1>      
+                    </div>
+                </div>
+                <div class="container">
                     <div class="row">
                         {% for band in bands %}
-                        <div class="col-sm-3" style="background-color:yellow;">
-                            <img src="{{band.imageUrl}}" class="img-responsive" style="width:100%" alt="Image" />
+                        <div class="col-sm-3">
+                        <a href="{% url 'bands:bandDetails' band.id %}"><img src="{{band.imageUrl}}" class="img-responsive" style="width:100%" alt="Image" /></a>
                         <p>{{band.vendor.name}}</p>   
                         <p>{{band.name}}</p>
                         <p>${{band.price}}</p>
@@ -78,6 +43,7 @@
                         {% endcomment %}
                         {% endfor %}
                     </div>
+                </div>
             </div>
     </body>
 </html>

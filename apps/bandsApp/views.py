@@ -42,23 +42,33 @@ def index (request) :
 
 # Display all the bands by local artists. 
 def artists (request) :  
+    context = {}
+    context = __addNavBarDetailsToContext__(request)
     bands = Band.objects.filter(vendor__vendorType='artist')
     print bands
-    context = {'bands':bands, 'type':'artist'}
+    context['bands'] = bands
+    context['type'] = 'artist'
     return render(request, 'bandsApp/vendorBands.html', context)
 
 # Display all the bands by exclusive brands. 
 def exclusives (request) :  
+    context = {}
+    context = __addNavBarDetailsToContext__(request)
     bands = Band.objects.filter(vendor__vendorType='exclusive')
     print bands
-    context = {'bands':bands, 'type':'exclusive'}
+    context['bands'] = bands
+    context['type'] = 'exclusive'
     return render(request, 'bandsApp/vendorBands.html', context)
 
 # Display all the bands by charities. 
 def cause (request) :  
+    context = {}
+    context = __addNavBarDetailsToContext__(request)
+
     bands = Band.objects.filter(vendor__vendorType='charity')
     print bands
-    context = {'bands':bands, 'type':'charity'}
+    context['bands'] = bands
+    context['type'] = 'charity'
     return render(request, 'bandsApp/vendorBands.html', context)
 
 # Display the search results 
@@ -82,7 +92,6 @@ def showCart (request) :
         
         context['bands'] = bands
         context['totalPrice']= totalPrice
-        context['totalItems'] = len(bands)
         context['orderId'] = request.session['order_id']
         
         return render(request, 'bandsApp/shoppingCart.html', context)
@@ -96,13 +105,16 @@ def editCart (request, orderId) :
     return redirect(reverse('bands:cart'))
 
 def vendorDetails(request, vendorId) :
-    
+    context = {}
+    context = __addNavBarDetailsToContext__(request)
     # Get the vendor 
-    vendor = Vendor.objects.get(pk=vendorId) # pk = primary key. You can put id instead of pk
+    vendor = Vendor.objects.get(pk=vendorId) 
+    print vendor
     # Get all bands by this vendor
     bands = Band.objects.filter(vendor=vendor)
 
-    context = {'vendor':vendor, 'bands':bands} 
+    context['vendor'] = vendor
+    context['bands']  = bands
     return render(request, 'bandsApp/vendorDetails.html', context)
 
 def checkout(request):
@@ -150,7 +162,7 @@ def confirmCheckout(request):
     order.status = 'received'
     order.save()
     del request.session['order_id']
-    del equest.session['totalPrice']
+    del request.session['totalPrice']
     print "chnaged order status"
     
     return redirect(reverse('bands:checkoutDetails'))
@@ -194,6 +206,76 @@ def logout (request) :
     del request.session['logged_in_user']
     return redirect(reverse('bands:home'))
 
+def bandDetails(request, bandId):
+    context = {}
+    context = __addNavBarDetailsToContext__(request)
+    print "bandDetails ", bandId
+    band = Band.objects.get(pk=bandId)
+    context['band'] = band
+    print band
+    
+    return render(request, 'bandsApp/bandDetails.html', context)
+
+def addToCart(request, bandId) :
+    order = None
+    band = None
+    print "bandId", bandId
+    print "inside addToCart"
+    if request.method == "POST" :
+        print "post ", request.POST
+        qty = float(request.POST['qty'])
+        band = Band.objects.get(pk=bandId)
+        order = __isActiveOrder__(request)
+        session_key = request.session.session_key
+        if not order:
+            print "creating new order"
+            user = __isLoggedIn__(request)
+            order = Order.objects.create(user=user, session_id=session_key, created_at=timezone.now(), updated_at = timezone.now())
+            request.session['order_id'] = order.id
+        try :
+            details = OrderDetails.objects.get(order=order, band=band)
+            details.qty += 1
+            details.save()
+        except OrderDetails.DoesNotExist :
+            etails = OrderDetails.objects.create(order=order, band=band, qty = qty, totalPrice = band.price * qty)
+        print "added to cart"
+
+    return redirect(reverse('bands:showCart'))
+
+def updateQty(request, bandId) :
+    if request.method == "POST":
+        print bandId
+        print request.POST
+        band = Band.objects.get(pk=bandId)
+        print band
+        order = __isActiveOrder__(request)
+        print order
+        details = OrderDetails.objects.get(order=order, band=band)
+        # print "qty before ", details.qty
+        details.qty = int(request.POST['qty'])
+        details.totalPrice = int(request.POST['qty']) * band.price
+        details.save()
+    return redirect(reverse('bands:showCart'))
+
+def deleteBand(request, bandId) :
+    band = Band.objects.get(pk=bandId)
+    print band
+    order = __isActiveOrder__(request)
+    print order
+    details = OrderDetails.objects.get(order=order, band=band)
+    
+    details.delete()
+    print "deleted band"
+    orderDetails = order.details.all()
+    print details
+    if (len(orderDetails) == 0) :
+        order.delete()
+        del request.session['order_id']
+        del request.session['totalPrice']
+        return redirect(reverse('bands:home'))
+    else:
+        return redirect(reverse('bands:showCart'))
+
 def __isLoggedIn__(request):
     if 'logged_in_user' in request.session:
         user = User.objects.get(pk=int(request.session['logged_in_user']))
@@ -202,9 +284,14 @@ def __isLoggedIn__(request):
         return None
 
 def __isActiveOrder__(request) :
+    order = None
     if 'order_id' in request.session :
-         order  = Order.objects.get(pk=int(request.session['order_id'])) 
-         return order 
+        try :
+            order  = Order.objects.get(pk=int(request.session['order_id'])) 
+        except Order.DoesNotExist :
+            del request.session['order_id']
+            del request.session['totalPrice']
+        return order 
     else :
         return None
 
@@ -231,7 +318,8 @@ def __getNumCartItems__(request) :
     
     if (order) :
         bands = OrderDetails.objects.filter(order=order)
-        numCartItems = len(bands)
+        for band in bands:
+            numCartItems += band.qty
 
     print "__getNumCartItems__ ",numCartItems
     return numCartItems

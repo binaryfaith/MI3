@@ -13,5 +13,30 @@
 </head>
 <body>
         {% include "./navbar.html" %}
+
+        <div class="row">
+            <div class="col-sm-4">
+                <img src="{{band.imageUrl}}" class="img-responsive" style="width:100%" alt="Image" />
+            </div>
+            <div class="col-sm-4">
+                <h4>{{band.name}}</h4>
+                <p>{{band.description}}</p>
+                <h4>{{band.price}}</h4>
+            </div>
+            <div class="col-sm-4">
+                <form action="{% url 'bands:addToCart' band.id %}" method="POST">
+                    {% csrf_token %}
+                    <label for="qty">Select Quantity</label>
+                    <select class="form-control" id="sel1" name="qty">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                    <input type="submit" name="addToCart" id="" value="Add To Cart">
+                </form>
+            </div>
+        </div>
 </body>
 </html>
